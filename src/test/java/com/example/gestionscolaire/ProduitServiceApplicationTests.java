@@ -28,8 +28,8 @@ class ProduitServiceApplicationTests {
 //		dynamicPropertyRegistry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
 //	}
 
-    @Test
-    void shouldCreateProduct() throws Exception {
+//    @Test
+//    void shouldCreateProduct() throws Exception {
 //		ProductRequest productRequest = getProductRequest();
 //		String productRequestString = objectMapper.writeValueAsString(productRequest);
 //		mockMvc.perform(MockMvcRequestBuilders.post("/api/product")
@@ -37,7 +37,7 @@ class ProduitServiceApplicationTests {
 //				.content(productRequestString)
 //		).andExpect(status().isCreated());
 //		producRepo.findAll().size();
-    }
+//    }
 
 //	private ProductRequest getProductRequest(){
 //		return ProductRequest.builder()
