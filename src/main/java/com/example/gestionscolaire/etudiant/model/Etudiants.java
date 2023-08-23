@@ -1,6 +1,5 @@
 package com.example.gestionscolaire.etudiant.model;
 
-import com.example.gestionscolaire.classe.model.Classe;
 import com.example.gestionscolaire.statut.model.Statut;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
