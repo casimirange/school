@@ -16,6 +16,7 @@
     <packaging>war</packaging>
     <properties>
         <java.version>1.8</java.version>
+        <start-class>com.example.gestionscolaire.GestionScolaireApplication</start-class>
         <!--		<spring-cloud.version>2021.0.3</spring-cloud.version>-->
 <!--        <testcontainer.version>1.17.2</testcontainer.version>-->
     </properties>
