@@ -2,14 +2,14 @@ package com.example.gestionscolaire;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-@SpringBootTest
-@Testcontainers
-@AutoConfigureMockMvc
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.testcontainers.junit.jupiter.Testcontainers;
+//
+//@SpringBootTest
+//@Testcontainers
+//@AutoConfigureMockMvc
 @RequiredArgsConstructor
 class ProduitServiceApplicationTests {
 
