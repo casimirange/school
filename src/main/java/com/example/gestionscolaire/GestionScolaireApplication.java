@@ -17,11 +17,6 @@ public class GestionScolaireApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(GestionScolaireApplication.class, args);
-//        Etudiant etudiant = new Etudiant();
-//        Enseignant enseignant = new Enseignant();
-//
-//        etudiant.getPension();
-//        enseignant.getUsername();
     }
 
 }
