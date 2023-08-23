@@ -13,7 +13,7 @@ import java.time.LocalTime;
 public class PointageProfReqDto {
 
 //    private LocalDate date;
-    private LocalTime getTime;
+//    private LocalTime getTime;
     private Long profId;
     private TypePointage type;
 }

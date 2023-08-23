@@ -15,7 +15,7 @@ import java.time.LocalTime;
 public class PointageEtudiantsReqDto {
 
 //    private LocalDate date;
-    private LocalTime getTime;
+//    private LocalTime getTime;
     private Long etdId;
     private TypePointage type;
 }
