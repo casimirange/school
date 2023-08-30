@@ -18,8 +18,8 @@ public class EtudiantReqDto {
     @Schema(description = "Nom de l'étudiant")
     private String firstName;
     private String lastName;
-    @NotNull(message = "{le matricule est obligatoire}")
-    private String matricule;
+//    @NotNull(message = "{le matricule est obligatoire}")
+//    private String matricule;
     private String classe;
     private String montantPay;
     private String totalPension;

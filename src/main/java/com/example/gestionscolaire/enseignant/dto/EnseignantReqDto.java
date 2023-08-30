@@ -14,7 +14,7 @@ public class EnseignantReqDto {
     @NotNull(message = "{firstName required}")
     private String firstName;
     private String lastName;
-    @NotNull(message = "{le matricule est obligatoire}")
-    private String matricule;
+//    @NotNull(message = "{le matricule est obligatoire}")
+//    private String matricule;
     private Statut idStatus;
 }
