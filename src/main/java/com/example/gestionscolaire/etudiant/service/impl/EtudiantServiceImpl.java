@@ -83,7 +83,7 @@ public class EtudiantServiceImpl implements IEtudiantService {
     @Override
     public byte[] getQrCodeByEtudiant(String matricule) {
         Etudiants etudiants = iEtudiantRepo.findByMatricule(matricule).get();
-        String infoEtudiant = "Nom: "+etudiants.getLastName()+ " \nPrenom: "+etudiants.getFirstName() +"\nMatricule: "+etudiants.getMatricule();
+        String infoEtudiant = ""+etudiants.getMatricule();
         byte[] image = new byte[0];
         try {
             // Generate and Return Qr Code in Byte Array

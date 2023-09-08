@@ -136,8 +136,6 @@ public class EnseignantServiceImpl implements IEnseignantService {
         try {
             // Generate and Return Qr Code in Byte Array
             image = QRCodeGenerator.getQRCodeImage(infoEtudiant,300,100);
-//            BufferedImage bufferedImage = QRCodeGenerator.generateBarcode(infoEtudiant, 200, 100);
-//            ImageIO.write(bufferedImage, "png", new File("barcode.png"));
         } catch (WriterException | IOException e) {
             e.printStackTrace();
         }
