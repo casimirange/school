@@ -1,4 +1,4 @@
-package com.example.gestionscolaire.authentication;
+package com.example.gestionscolaire.configuration.globalCoonfig.globalConfiguration;
 
 
 import com.example.gestionscolaire.authentication.service.AuthEntryPointJwt;

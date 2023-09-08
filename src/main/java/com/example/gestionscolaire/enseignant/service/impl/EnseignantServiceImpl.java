@@ -26,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -128,11 +131,13 @@ public class EnseignantServiceImpl implements IEnseignantService {
     @Override
     public byte[] getQrCodeByProf(String matricule) {
         Enseignants enseignants = iEnseignantRepo.findByMatricule(matricule).get();
-        String infoEtudiant = "Nom: "+enseignants.getLastName()+ " \nPrenom: "+enseignants.getFirstName() +"\nMatricule: "+enseignants.getMatricule();
+        String infoEtudiant = ""+enseignants.getMatricule();
         byte[] image = new byte[0];
         try {
             // Generate and Return Qr Code in Byte Array
-            image = QRCodeGenerator.getQRCodeImage(infoEtudiant,250,250);
+            image = QRCodeGenerator.getQRCodeImage(infoEtudiant,300,100);
+//            BufferedImage bufferedImage = QRCodeGenerator.generateBarcode(infoEtudiant, 200, 100);
+//            ImageIO.write(bufferedImage, "png", new File("barcode.png"));
         } catch (WriterException | IOException e) {
             e.printStackTrace();
         }
