@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/pointageProf")
+@RequestMapping("/api/pointageProf")
 @CrossOrigin("*")
 public class PointageProfController {
     private final IPointageProfService iPointageProfService;

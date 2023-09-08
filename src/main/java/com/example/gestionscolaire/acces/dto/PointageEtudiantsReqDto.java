@@ -16,6 +16,6 @@ public class PointageEtudiantsReqDto {
 
 //    private LocalDate date;
 //    private LocalTime getTime;
-    private Long etdId;
-    private TypePointage type;
+    private String matricule;
+//    private TypePointage type;
 }

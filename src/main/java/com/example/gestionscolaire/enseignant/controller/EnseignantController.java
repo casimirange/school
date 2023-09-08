@@ -1,18 +1,16 @@
 package com.example.gestionscolaire.enseignant.controller;
 
-import com.example.gestionscolaire.configuration.globalCoonfig.ApplicationConstant;
+import com.example.gestionscolaire.configuration.globalCoonfig.globalConfiguration.ApplicationConstant;
 import com.example.gestionscolaire.enseignant.dto.EnseignantReqDto;
 import com.example.gestionscolaire.enseignant.dto.EnseignantResDto;
 import com.example.gestionscolaire.enseignant.service.IEnseignantService;
 import com.example.gestionscolaire.etudiant.dto.EtudiantReqDto;
-import com.example.gestionscolaire.etudiant.dto.EtudiantResDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

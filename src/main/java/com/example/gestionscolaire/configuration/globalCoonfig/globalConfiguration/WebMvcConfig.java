@@ -1,4 +1,4 @@
-package com.example.gestionscolaire.configuration.globalCoonfig;
+package com.example.gestionscolaire.configuration.globalCoonfig.globalConfiguration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

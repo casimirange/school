@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/pointageEtudiants")
+@RequestMapping("/api/pointageEtudiants")
 @CrossOrigin("*")
 public class PointageEtudiantsController {
     private final IPointageEtudiantService iPointageEtudiantService;
@@ -28,7 +28,7 @@ public class PointageEtudiantsController {
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> savePointageEtd(@RequestBody PointageEtudiantsReqDto pointageEtudiantsReqDto) {
-        EtudiantResDto etudiants = iEtudiantService.getEtudiantbyId(pointageEtudiantsReqDto.getEtdId());
+        EtudiantResDto etudiants = iEtudiantService.getEtudiantbyMatricule(pointageEtudiantsReqDto.getMatricule());
         System.out.println("et :"+etudiants);
         if (iConrolService.existControlByEtat(true)){
             Control control = iConrolService.findControlByEtat(true);

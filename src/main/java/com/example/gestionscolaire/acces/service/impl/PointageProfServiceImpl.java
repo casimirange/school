@@ -29,57 +29,104 @@ public class PointageProfServiceImpl implements IPointageProfService {
 
     @Override
     public PointageProfesseur enregistrerPointage(PointageProfReqDto pointageProfReqDto) {
-        Enseignants prof = iEnseignantRepo.findById(pointageProfReqDto.getProfId()).get();
-        log.info("oui");
+        Enseignants prof = iEnseignantRepo.findByMatricule(pointageProfReqDto.getMatricule()).get();
+//        log.info("oui");
 //        if (prof.getStatus().equals(EStatus.ACTIF)) {
             if (!iPointageProfesseurRepo.existsPointageProfesseurByDateAndEnseignant(LocalDate.now(), prof)) {
                 log.info("non");
                 PointageProfesseur pointageProf = new PointageProfesseur();
                 pointageProf.setDate(LocalDate.now());
-                if (pointageProfReqDto.getType().equals(TypePointage.ENTREE)) {
+//                if (pointageProfReqDto.getType().equals(TypePointage.ENTREE)) {
                     pointageProf.setGetTimeIn1(LocalTime.now());
-                } else {
-                    pointageProf.setGetTimeOut1(LocalTime.now());
-                }
-                pointageProf.setType(pointageProfReqDto.getType());
+//                } else {
+//                    pointageProf.setGetTimeOut1(LocalTime.now());
+//                }
+//                pointageProf.setType(pointageProfReqDto.getType());
                 pointageProf.setEnseignant(prof);
                 iPointageProfesseurRepo.save(pointageProf);
             } else {
                 PointageProfesseur getPointageProf = new PointageProfesseur();
                 getPointageProf = iPointageProfesseurRepo.findByDateAndEnseignant(LocalDate.now(), prof).get();
-
-                if (pointageProfReqDto.getType().equals(TypePointage.ENTREE)) {
-                    if (getPointageProf.getGetTimeOut1() != null && getPointageProf.getGetTimeIn2() == null) {
-                        getPointageProf.setGetTimeIn2(LocalTime.now());
-                    }
-                    if (getPointageProf.getGetTimeOut2() != null && getPointageProf.getGetTimeIn3() == null) {
-                        getPointageProf.setGetTimeIn3(LocalTime.now());
-                    }
-                    if (getPointageProf.getGetTimeOut3() != null && getPointageProf.getGetTimeIn4() == null) {
-                        getPointageProf.setGetTimeIn4(LocalTime.now());
-                    }
-                    if (getPointageProf.getGetTimeOut4() != null && getPointageProf.getGetTimeIn5() == null) {
-                        getPointageProf.setGetTimeIn5(LocalTime.now());
-                    }
-
-                } else {
+log.info("pointage {}", getPointageProf);
+//                if (pointageProfReqDto.getType().equals(TypePointage.ENTREE)) {
                     if (getPointageProf.getGetTimeIn1() != null && getPointageProf.getGetTimeOut1() == null) {
                         getPointageProf.setGetTimeOut1(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
                     }
-                    if (getPointageProf.getGetTimeIn2() != null && getPointageProf.getGetTimeOut2() == null) {
+                    if (getPointageProf.getGetTimeOut1() != null && getPointageProf.getGetTimeIn1() != null && getPointageProf.getGetTimeIn2() == null) {
+                        getPointageProf.setGetTimeIn2(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
+                    }
+                    if (getPointageProf.getGetTimeIn2() != null && getPointageProf.getGetTimeOut1() != null && getPointageProf.getGetTimeOut2() == null) {
                         getPointageProf.setGetTimeOut2(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
                     }
-                    if (getPointageProf.getGetTimeIn3() != null && getPointageProf.getGetTimeOut3() == null) {
+                    if (getPointageProf.getGetTimeOut2() != null && getPointageProf.getGetTimeIn2() != null && getPointageProf.getGetTimeIn3() == null) {
+                        getPointageProf.setGetTimeIn3(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
+                    }
+                    if (getPointageProf.getGetTimeIn3() != null && getPointageProf.getGetTimeOut2() != null && getPointageProf.getGetTimeOut3() == null) {
                         getPointageProf.setGetTimeOut3(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
                     }
-                    if (getPointageProf.getGetTimeIn4() != null && getPointageProf.getGetTimeOut4() == null) {
+                    if (getPointageProf.getGetTimeOut3() != null && getPointageProf.getGetTimeIn3() != null && getPointageProf.getGetTimeIn4() == null) {
+                        getPointageProf.setGetTimeIn4(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
+                    }
+                    if (getPointageProf.getGetTimeIn4() != null && getPointageProf.getGetTimeOut3() != null && getPointageProf.getGetTimeOut4() == null) {
                         getPointageProf.setGetTimeOut4(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
                     }
-                    if (getPointageProf.getGetTimeIn5() != null && getPointageProf.getGetTimeOut5() == null) {
+                    if (getPointageProf.getGetTimeOut4() != null && getPointageProf.getGetTimeIn4() != null && getPointageProf.getGetTimeIn5() == null) {
+                        getPointageProf.setGetTimeIn5(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
+                    }
+                    if (getPointageProf.getGetTimeIn5() != null && getPointageProf.getGetTimeOut4() != null && getPointageProf.getGetTimeOut5() == null) {
                         getPointageProf.setGetTimeOut5(LocalTime.now());
+                        iPointageProfesseurRepo.save(getPointageProf);
+                        getPointageProf = new PointageProfesseur();
                     }
-                }
-                iPointageProfesseurRepo.save(getPointageProf);
+//                }
+//                if (pointageProfReqDto.getType().equals(TypePointage.ENTREE)) {
+//                    if (getPointageProf.getGetTimeOut1() != null && getPointageProf.getGetTimeIn2() == null) {
+//                        getPointageProf.setGetTimeIn2(LocalTime.now());
+//                    }
+//                    if (getPointageProf.getGetTimeOut2() != null && getPointageProf.getGetTimeIn3() == null) {
+//                        getPointageProf.setGetTimeIn3(LocalTime.now());
+//                    }
+//                    if (getPointageProf.getGetTimeOut3() != null && getPointageProf.getGetTimeIn4() == null) {
+//                        getPointageProf.setGetTimeIn4(LocalTime.now());
+//                    }
+//                    if (getPointageProf.getGetTimeOut4() != null && getPointageProf.getGetTimeIn5() == null) {
+//                        getPointageProf.setGetTimeIn5(LocalTime.now());
+//                    }
+//
+//                } else {
+//                    if (getPointageProf.getGetTimeIn1() != null && getPointageProf.getGetTimeOut1() == null) {
+//                        getPointageProf.setGetTimeOut1(LocalTime.now());
+//                    }
+//                    if (getPointageProf.getGetTimeIn2() != null && getPointageProf.getGetTimeOut2() == null) {
+//                        getPointageProf.setGetTimeOut2(LocalTime.now());
+//                    }
+//                    if (getPointageProf.getGetTimeIn3() != null && getPointageProf.getGetTimeOut3() == null) {
+//                        getPointageProf.setGetTimeOut3(LocalTime.now());
+//                    }
+//                    if (getPointageProf.getGetTimeIn4() != null && getPointageProf.getGetTimeOut4() == null) {
+//                        getPointageProf.setGetTimeOut4(LocalTime.now());
+//                    }
+//                    if (getPointageProf.getGetTimeIn5() != null && getPointageProf.getGetTimeOut5() == null) {
+//                        getPointageProf.setGetTimeOut5(LocalTime.now());
+//                    }
+//                }
+
             }
 //        }
         return null;

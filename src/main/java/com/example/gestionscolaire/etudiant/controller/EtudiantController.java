@@ -1,7 +1,6 @@
 package com.example.gestionscolaire.etudiant.controller;
 
-import com.example.gestionscolaire.configuration.globalCoonfig.ApplicationConstant;
-import com.example.gestionscolaire.enseignant.dto.EnseignantResDto;
+import com.example.gestionscolaire.configuration.globalCoonfig.globalConfiguration.ApplicationConstant;
 import com.example.gestionscolaire.etudiant.dto.EtudiantReqDto;
 import com.example.gestionscolaire.etudiant.dto.EtudiantResDto;
 import com.example.gestionscolaire.etudiant.service.IEtudiantService;

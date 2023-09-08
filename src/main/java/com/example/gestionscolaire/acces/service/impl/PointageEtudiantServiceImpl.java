@@ -4,6 +4,7 @@ import com.example.gestionscolaire.acces.dto.PointageEtudiantsReqDto;
 import com.example.gestionscolaire.acces.dto.PointageEtudiantsResDto;
 import com.example.gestionscolaire.acces.dto.PointageProfResDto;
 import com.example.gestionscolaire.acces.model.PointageEtudiant;
+import com.example.gestionscolaire.acces.model.PointageProfesseur;
 import com.example.gestionscolaire.acces.model.TypePointage;
 import com.example.gestionscolaire.acces.repository.IPointageEtudiantRepo;
 import com.example.gestionscolaire.acces.service.IPointageEtudiantService;
@@ -31,56 +32,102 @@ public class PointageEtudiantServiceImpl implements IPointageEtudiantService {
 
     @Override
     public PointageEtudiant enregistrerPointage(PointageEtudiantsReqDto pointageEtudiantsReqDto) {
-        Etudiants etudiants = iEtudiantRepo.findById(pointageEtudiantsReqDto.getEtdId()).get();
+        Etudiants etudiants = iEtudiantRepo.findByMatricule(pointageEtudiantsReqDto.getMatricule()).get();
         log.info("oui");
 //        if (etudiants.getStatus().equals(EStatus.ACTIF)) {
             if (!iPointageEtudiantRepo.existsPointageEtudiantByDateAndEtudiant(LocalDate.now(), etudiants)) {
                 PointageEtudiant pointageEtudiant = new PointageEtudiant();
                 pointageEtudiant.setDate(LocalDate.now());
-                if (pointageEtudiantsReqDto.getType().equals(TypePointage.ENTREE)) {
+//                if (pointageEtudiantsReqDto.getType().equals(TypePointage.ENTREE)) {
                     pointageEtudiant.setGetTimeIn1(LocalTime.now());
-                } else {
-                    pointageEtudiant.setGetTimeOut1(LocalTime.now());
-                }
-                pointageEtudiant.setType(pointageEtudiantsReqDto.getType());
+//                } else {
+//                    pointageEtudiant.setGetTimeOut1(LocalTime.now());
+//                }
+//                pointageEtudiant.setType(pointageEtudiantsReqDto.getType());
                 pointageEtudiant.setEtudiant(etudiants);
                 iPointageEtudiantRepo.save(pointageEtudiant);
             }
             else {
                 PointageEtudiant getPointageEtudiant = iPointageEtudiantRepo.findByDateAndEtudiant(LocalDate.now(), etudiants).get();
 
-                if (pointageEtudiantsReqDto.getType().equals(TypePointage.ENTREE)) {
-                    if (getPointageEtudiant.getGetTimeOut1() != null && getPointageEtudiant.getGetTimeIn2() == null) {
-                        getPointageEtudiant.setGetTimeIn2(LocalTime.now());
-                    }
-                    if (getPointageEtudiant.getGetTimeOut2() != null && getPointageEtudiant.getGetTimeIn3() == null) {
-                        getPointageEtudiant.setGetTimeIn3(LocalTime.now());
-                    }
-                    if (getPointageEtudiant.getGetTimeOut3() != null && getPointageEtudiant.getGetTimeIn4() == null) {
-                        getPointageEtudiant.setGetTimeIn4(LocalTime.now());
-                    }
-                    if (getPointageEtudiant.getGetTimeOut4() != null && getPointageEtudiant.getGetTimeIn5() == null) {
-                        getPointageEtudiant.setGetTimeIn5(LocalTime.now());
-                    }
-
-                } else {
-                    if (getPointageEtudiant.getGetTimeIn1() != null && getPointageEtudiant.getGetTimeOut1() == null) {
-                        getPointageEtudiant.setGetTimeOut1(LocalTime.now());
-                    }
-                    if (getPointageEtudiant.getGetTimeIn2() != null && getPointageEtudiant.getGetTimeOut2() == null) {
-                        getPointageEtudiant.setGetTimeOut2(LocalTime.now());
-                    }
-                    if (getPointageEtudiant.getGetTimeIn3() != null && getPointageEtudiant.getGetTimeOut3() == null) {
-                        getPointageEtudiant.setGetTimeOut3(LocalTime.now());
-                    }
-                    if (getPointageEtudiant.getGetTimeIn4() != null && getPointageEtudiant.getGetTimeOut4() == null) {
-                        getPointageEtudiant.setGetTimeOut4(LocalTime.now());
-                    }
-                    if (getPointageEtudiant.getGetTimeIn5() != null && getPointageEtudiant.getGetTimeOut5() == null) {
-                        getPointageEtudiant.setGetTimeOut5(LocalTime.now());
-                    }
+                if (getPointageEtudiant.getGetTimeIn1() != null && getPointageEtudiant.getGetTimeOut1() == null) {
+                    getPointageEtudiant.setGetTimeOut1(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
                 }
-                iPointageEtudiantRepo.save(getPointageEtudiant);
+                if (getPointageEtudiant.getGetTimeOut1() != null && getPointageEtudiant.getGetTimeIn1() != null && getPointageEtudiant.getGetTimeIn2() == null) {
+                    getPointageEtudiant.setGetTimeIn2(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
+                }
+                if (getPointageEtudiant.getGetTimeIn2() != null && getPointageEtudiant.getGetTimeOut1() != null && getPointageEtudiant.getGetTimeOut2() == null) {
+                    getPointageEtudiant.setGetTimeOut2(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
+                }
+                if (getPointageEtudiant.getGetTimeOut2() != null && getPointageEtudiant.getGetTimeIn2() != null && getPointageEtudiant.getGetTimeIn3() == null) {
+                    getPointageEtudiant.setGetTimeIn3(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
+                }
+                if (getPointageEtudiant.getGetTimeIn3() != null && getPointageEtudiant.getGetTimeOut2() != null && getPointageEtudiant.getGetTimeOut3() == null) {
+                    getPointageEtudiant.setGetTimeOut3(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
+                }
+                if (getPointageEtudiant.getGetTimeOut3() != null && getPointageEtudiant.getGetTimeIn3() != null && getPointageEtudiant.getGetTimeIn4() == null) {
+                    getPointageEtudiant.setGetTimeIn4(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
+                }
+                if (getPointageEtudiant.getGetTimeIn4() != null && getPointageEtudiant.getGetTimeOut3() != null && getPointageEtudiant.getGetTimeOut4() == null) {
+                    getPointageEtudiant.setGetTimeOut4(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
+                }
+                if (getPointageEtudiant.getGetTimeOut4() != null && getPointageEtudiant.getGetTimeIn4() != null && getPointageEtudiant.getGetTimeIn5() == null) {
+                    getPointageEtudiant.setGetTimeIn5(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
+                }
+                if (getPointageEtudiant.getGetTimeIn5() != null && getPointageEtudiant.getGetTimeOut4() != null && getPointageEtudiant.getGetTimeOut5() == null) {
+                    getPointageEtudiant.setGetTimeOut5(LocalTime.now());
+                    iPointageEtudiantRepo.save(getPointageEtudiant);
+                    getPointageEtudiant = new PointageEtudiant();
+                }
+
+//                if (pointageEtudiantsReqDto.getType().equals(TypePointage.ENTREE)) {
+//                    if (getPointageEtudiant.getGetTimeOut1() != null && getPointageEtudiant.getGetTimeIn2() == null) {
+//                        getPointageEtudiant.setGetTimeIn2(LocalTime.now());
+//                    }
+//                    if (getPointageEtudiant.getGetTimeOut2() != null && getPointageEtudiant.getGetTimeIn3() == null) {
+//                        getPointageEtudiant.setGetTimeIn3(LocalTime.now());
+//                    }
+//                    if (getPointageEtudiant.getGetTimeOut3() != null && getPointageEtudiant.getGetTimeIn4() == null) {
+//                        getPointageEtudiant.setGetTimeIn4(LocalTime.now());
+//                    }
+//                    if (getPointageEtudiant.getGetTimeOut4() != null && getPointageEtudiant.getGetTimeIn5() == null) {
+//                        getPointageEtudiant.setGetTimeIn5(LocalTime.now());
+//                    }
+//
+//                } else {
+//                    if (getPointageEtudiant.getGetTimeIn1() != null && getPointageEtudiant.getGetTimeOut1() == null) {
+//                        getPointageEtudiant.setGetTimeOut1(LocalTime.now());
+//                    }
+//                    if (getPointageEtudiant.getGetTimeIn2() != null && getPointageEtudiant.getGetTimeOut2() == null) {
+//                        getPointageEtudiant.setGetTimeOut2(LocalTime.now());
+//                    }
+//                    if (getPointageEtudiant.getGetTimeIn3() != null && getPointageEtudiant.getGetTimeOut3() == null) {
+//                        getPointageEtudiant.setGetTimeOut3(LocalTime.now());
+//                    }
+//                    if (getPointageEtudiant.getGetTimeIn4() != null && getPointageEtudiant.getGetTimeOut4() == null) {
+//                        getPointageEtudiant.setGetTimeOut4(LocalTime.now());
+//                    }
+//                    if (getPointageEtudiant.getGetTimeIn5() != null && getPointageEtudiant.getGetTimeOut5() == null) {
+//                        getPointageEtudiant.setGetTimeOut5(LocalTime.now());
+//                    }
+//                }
+//                iPointageEtudiantRepo.save(getPointageEtudiant);
             }
 //        }
         return null;
