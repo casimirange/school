@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +23,12 @@ public class EtudiantResDto {
     private String classe;
     private String totalPension;
     private String montantPay;
+    private String dateOfBirth;
+    private String placeOfBirth;
+    private String photoLink;
+    private String sex;
+    private String fatherName;
+    private String motherName;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

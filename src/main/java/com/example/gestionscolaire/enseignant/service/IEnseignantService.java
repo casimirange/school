@@ -2,7 +2,6 @@ package com.example.gestionscolaire.enseignant.service;
 
 import com.example.gestionscolaire.enseignant.dto.EnseignantReqDto;
 import com.example.gestionscolaire.enseignant.dto.EnseignantResDto;
-import com.example.gestionscolaire.etudiant.dto.EtudiantResDto;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,4 +15,6 @@ public interface IEnseignantService {
     EnseignantResDto getProfbyId(Long id);
     EnseignantResDto getProfbyMatricule(String matricule);
     byte[] getQrCodeByProf(String matricule);
+    EnseignantResDto updateEnseignant(EnseignantReqDto enseignantReqDto, String matricule);
+    EnseignantResDto disableEtudiant(String matricule);
 }

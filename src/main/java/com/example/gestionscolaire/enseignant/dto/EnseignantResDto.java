@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,5 +17,8 @@ public class EnseignantResDto {
     private String firstName;
     private String lastName;
     private String matricule;
+    private String photoLink;
     private Statut status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

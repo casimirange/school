@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -22,9 +24,19 @@ public class Etudiants {
     @Column(unique = true, nullable = false)
     private String matricule;
     private String classe;
+    private String photoLink;
+    private String dateOfBirth;
+    private String placeOfBirth;
+    private String sex;
+    @Column(nullable = true)
+    private String fatherName;
+    @Column(nullable = true)
+    private String motherName;
     @ManyToOne
     private Statut status;
     private String montantPay;
     private String totalPension;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 }

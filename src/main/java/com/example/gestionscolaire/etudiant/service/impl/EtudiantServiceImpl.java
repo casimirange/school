@@ -27,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,25 +43,39 @@ public class EtudiantServiceImpl implements IEtudiantService {
 
     private final IEtudiantRepo iEtudiantRepo;
     private final IStatusRepo iStatusRepo;
-
-    private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/static/img";
-//    public static void generateQRCodeImage(String text, int width, int height, String filePath)
-//            throws WriterException, IOException {
-//        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-//        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
-//
-//        Path path = FileSystems.getDefault().getPath(filePath);
-//        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-//
-//    }
     @Override
-    public EtudiantResDto addEtudiant(EtudiantReqDto etudiantReqDto) throws WriterException, IOException {
+    public EtudiantResDto addEtudiant(EtudiantReqDto etudiantReqDto) {
         Etudiants etudiants = mapToEtudiant(etudiantReqDto);
         etudiants.setMatricule(generateMatriculeEtudiant());
-//        String infoEtudiant = "Nom: "+etudiants.getLastName()+ " \nPrenom: "+etudiants.getFirstName() +"\nMatricule: "+etudiants.getMatricule();
-//        generateQRCodeImage(infoEtudiant, 250, 250, QR_CODE_IMAGE_PATH+"/QRCode-"+etudiants.getMatricule()+".png");
-//        enseignants.setStatus(iStatusRepo.findByEStatus(EStatus.ACTIF).get());
+        etudiants.setCreatedAt(LocalDateTime.now());
+        log.info("voivi {}", etudiants);
         return mapToEtudiantResponse(iEtudiantRepo.save(etudiants));
+    }
+
+    @Override
+    public EtudiantResDto updateEtudiant(EtudiantReqDto etudiantReqDto, String matricule) {
+        Etudiants findEtudiants = iEtudiantRepo.findByMatricule(matricule).get();
+        Etudiants etudiants = mapToEtudiant(etudiantReqDto);
+        findEtudiants.setClasse(etudiants.getClasse());
+        findEtudiants.setSex(etudiants.getSex());
+        findEtudiants.setDateOfBirth(etudiants.getDateOfBirth());
+        findEtudiants.setPlaceOfBirth(etudiants.getPlaceOfBirth());
+        findEtudiants.setFatherName(etudiants.getFatherName());
+        findEtudiants.setFirstName(etudiants.getFirstName());
+        findEtudiants.setMotherName(etudiants.getMotherName());
+        findEtudiants.setMontantPay(etudiants.getMontantPay());
+        findEtudiants.setLastName(etudiants.getLastName());
+        findEtudiants.setTotalPension(etudiants.getTotalPension());
+        findEtudiants.setUpdatedAt(LocalDateTime.now());
+        return mapToEtudiantResponse(iEtudiantRepo.save(findEtudiants));
+    }
+
+    @Override
+    public EtudiantResDto disableEtudiant(String matricule) {
+        Etudiants findEtudiants = iEtudiantRepo.findByMatricule(matricule).get();
+        findEtudiants.setStatus(findEtudiants.getStatus().getName().equals(EStatus.ACTIF) ? iStatusRepo.getStatutByName(EStatus.INACTIF).get() : iStatusRepo.getStatutByName(EStatus.ACTIF).get());
+        findEtudiants.setUpdatedAt(LocalDateTime.now());
+        return mapToEtudiantResponse(iEtudiantRepo.save(findEtudiants));
     }
 
     @Override
@@ -124,18 +140,25 @@ public class EtudiantServiceImpl implements IEtudiantService {
             etudiantReqDto.setFirstName(rowData.get(0));
             etudiantReqDto.setLastName(rowData.get(1));
             etudiantReqDto.setClasse(rowData.get(2));
-            etudiantReqDto.setTotalPension(rowData.get(3));
-            etudiantReqDto.setMontantPay(rowData.get(4));
-//            etudiantReqDto.setMatricule(generateMatriculeEtudiant());
+            etudiantReqDto.setSex(rowData.get(3));
+            etudiantReqDto.setDateOfBirth(rowData.get(4));
+            etudiantReqDto.setPlaceOfBirth(rowData.get(5));
+            etudiantReqDto.setFatherName(rowData.get(6));
+            etudiantReqDto.setMotherName(rowData.get(7));
+            etudiantReqDto.setTotalPension(rowData.get(8));
+            etudiantReqDto.setMontantPay(rowData.get(9));
             rows.add(rowData);
-            log.info("voici l'etudiant " + etudiantReqDto);
             Etudiants etudiants = mapToEtudiant(etudiantReqDto);
             etudiants.setMatricule(generateMatriculeEtudiant());
+            etudiants.setCreatedAt(LocalDateTime.now());
+            log.info("liste {}", etudiants);
             etudiantsList.add(etudiants);
-//            String infoEtudiant = "Nom: "+etudiants.getLastName()+ " \nPrenom: "+etudiants.getFirstName() +"\nMatricule: "+etudiants.getMatricule();
-//            QRCodeGenerator.generateQRCodeImage(infoEtudiant, 250, 250, QR_CODE_IMAGE_PATH+"/QRCode-"+etudiants.getMatricule()+".png");
+            log.info("liste2 {}", etudiantsList);
         }
+
+        log.info("liste3 {}", etudiantsList);
         iEtudiantRepo.saveAll(etudiantsList);
+        log.info("fin");
         return rows;
     }
 
@@ -149,6 +172,14 @@ public class EtudiantServiceImpl implements IEtudiantService {
                 .totalPension(etudiants.getTotalPension())
                 .montantPay(etudiants.getMontantPay())
                 .status(etudiants.getStatus())
+                .photoLink(etudiants.getPhotoLink())
+                .placeOfBirth(etudiants.getPlaceOfBirth())
+                .dateOfBirth(etudiants.getDateOfBirth())
+                .sex(etudiants.getSex())
+                .fatherName(etudiants.getFatherName())
+                .motherName(etudiants.getMotherName())
+                .createdAt(etudiants.getCreatedAt())
+                .updatedAt(etudiants.getUpdatedAt())
                 .build();
     }
 
@@ -156,11 +187,15 @@ public class EtudiantServiceImpl implements IEtudiantService {
         return Etudiants.builder()
                 .firstName(etudiantReqDto.getFirstName())
                 .lastName(etudiantReqDto.getLastName())
-//                .matricule(etudiantReqDto.getMatricule())
                 .classe(etudiantReqDto.getClasse())
                 .totalPension(etudiantReqDto.getTotalPension())
                 .montantPay(etudiantReqDto.getMontantPay())
                 .status(iStatusRepo.getStatutByName(EStatus.ACTIF).get())
+                .placeOfBirth(etudiantReqDto.getPlaceOfBirth())
+                .dateOfBirth(etudiantReqDto.getDateOfBirth())
+                .sex(etudiantReqDto.getSex())
+                .fatherName(etudiantReqDto.getFatherName())
+                .motherName(etudiantReqDto.getMotherName())
                 .build();
     }
 
@@ -170,25 +205,4 @@ public class EtudiantServiceImpl implements IEtudiantService {
         return matricule;
     }
 
-//    private static void generateQRCodeImage(String text, int width, int height, String filePath)
-//            throws WriterException, IOException {
-//        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-//        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
-//
-//        Path path = FileSystems.getDefault().getPath(filePath);
-//        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-//
-//    }
-//
-//    private static byte[] getQRCodeImage(String text, int width, int height) throws WriterException, IOException {
-//        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-//        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
-//
-//        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-//        MatrixToImageConfig con = new MatrixToImageConfig( 0xFF000002 , 0xFFFFC041 ) ;
-//
-//        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream,con);
-//        byte[] pngData = pngOutputStream.toByteArray();
-//        return pngData;
-//    }
 }

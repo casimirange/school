@@ -6,6 +6,7 @@ import com.example.gestionscolaire.enseignant.dto.EnseignantResDto;
 import com.example.gestionscolaire.enseignant.model.Enseignants;
 import com.example.gestionscolaire.enseignant.repository.IEnseignantRepo;
 import com.example.gestionscolaire.enseignant.service.IEnseignantService;
+import com.example.gestionscolaire.etudiant.model.Etudiants;
 import com.example.gestionscolaire.statut.model.EStatus;
 import com.example.gestionscolaire.statut.repository.IStatusRepo;
 import com.google.zxing.WriterException;
@@ -31,6 +32,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +57,7 @@ public class EnseignantServiceImpl implements IEnseignantService {
     public EnseignantResDto addProf(EnseignantReqDto enseignantReqDto) {
         Enseignants enseignants = mapToEnseignant(enseignantReqDto);
         enseignants.setMatricule(generateMatriculeProf());
-//        enseignants.setStatus(iStatusRepo.findByEStatus(EStatus.ACTIF).get());
+        enseignants.setCreatedAt(LocalDateTime.now());
         return mapToEnseignantResponse(iEnseignantRepo.save(enseignants));
     }
 
@@ -96,6 +98,7 @@ public class EnseignantServiceImpl implements IEnseignantService {
             log.info("voici l'enseignant " + enseignantReqDto);
             Enseignants enseignants = mapToEnseignant(enseignantReqDto);
             enseignants.setMatricule(generateMatriculeProf());
+            enseignants.setCreatedAt(LocalDateTime.now());
             enseignantsList.add(enseignants);
 //            iEnseignantRepo.save(enseignants);
         }
@@ -142,6 +145,24 @@ public class EnseignantServiceImpl implements IEnseignantService {
         return image;
     }
 
+    @Override
+    public EnseignantResDto updateEnseignant(EnseignantReqDto enseignantReqDto, String matricule) {
+        Enseignants findEnseignant = iEnseignantRepo.findByMatricule(matricule).get();
+        Enseignants enseignants = mapToEnseignant(enseignantReqDto);
+        findEnseignant.setFirstName(enseignants.getFirstName());
+        findEnseignant.setLastName(enseignants.getLastName());
+        findEnseignant.setUpdatedAt(LocalDateTime.now());
+        return mapToEnseignantResponse(iEnseignantRepo.save(findEnseignant));
+    }
+
+    @Override
+    public EnseignantResDto disableEtudiant(String matricule) {
+        Enseignants findEnseignant = iEnseignantRepo.findByMatricule(matricule).get();
+        findEnseignant.setStatus(findEnseignant.getStatus().getName().equals(EStatus.ACTIF) ? iStatusRepo.getStatutByName(EStatus.INACTIF).get() : iStatusRepo.getStatutByName(EStatus.ACTIF).get());
+        findEnseignant.setUpdatedAt(LocalDateTime.now());
+        return mapToEnseignantResponse(iEnseignantRepo.save(findEnseignant));
+    }
+
     private EnseignantResDto mapToEnseignantResponse(Enseignants enseignant) {
         return EnseignantResDto.builder()
                 .id(enseignant.getId())
@@ -149,6 +170,9 @@ public class EnseignantServiceImpl implements IEnseignantService {
                 .lastName(enseignant.getLastName())
                 .matricule(enseignant.getMatricule())
                 .status(enseignant.getStatus())
+                .photoLink(enseignant.getPhotoLink())
+                .createdAt(enseignant.getCreatedAt())
+                .updatedAt(enseignant.getUpdatedAt())
                 .build();
     }
 
@@ -156,7 +180,6 @@ public class EnseignantServiceImpl implements IEnseignantService {
         return Enseignants.builder()
                 .firstName(enseignant.getFirstName())
                 .lastName(enseignant.getLastName())
-//                .matricule(enseignant.getMatricule())
                 .status(iStatusRepo.getStatutByName(EStatus.ACTIF).get())
                 .build();
     }

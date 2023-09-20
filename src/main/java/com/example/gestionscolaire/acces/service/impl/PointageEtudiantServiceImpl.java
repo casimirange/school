@@ -144,7 +144,7 @@ public class PointageEtudiantServiceImpl implements IPointageEtudiantService {
             pointageEtudiantResDto.setId(x.getId());
             pointageEtudiantResDto.setEtudiants(x.getEtudiant());
             pointageEtudiantResDto.setDate(x.getDate());
-            pointageEtudiantResDto.setType(x.getType());
+//            pointageEtudiantResDto.setType(x.getType());
             pointageEtudiantResDto.setGetTimeIn1(x.getGetTimeIn1());
             pointageEtudiantResDto.setGetTimeIn2(x.getGetTimeIn2());
             pointageEtudiantResDto.setGetTimeIn3(x.getGetTimeIn3());

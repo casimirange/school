@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -15,13 +17,30 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class EtudiantReqDto {
     @NotNull(message = "{firstName required}")
-    @Schema(description = "Nom de l'étudiant")
+    @Schema(description = "Prénom de l'étudiant")
     private String firstName;
+    @Schema(description = "Nom de l'étudiant")
     private String lastName;
-//    @NotNull(message = "{le matricule est obligatoire}")
-//    private String matricule;
+    @NotNull(message = "{classe required}")
+    @Schema(description = "Classe de l'étudiant")
     private String classe;
+    @NotNull(message = "{montantPay required}")
+    @Schema(description = "montant de la pension payée par l'étudiant")
     private String montantPay;
+    @NotNull(message = "{totalPension required}")
+    @Schema(description = "montant total de la pension que l'étudiant doit payé")
     private String totalPension;
-//    private Statut idStatus;
+    @NotNull(message = "{dateOfBirth required}")
+    @Schema(description = "date de naissance de l'étudiant")
+    private String dateOfBirth;
+    @NotNull(message = "{placeOfBirth required}")
+    @Schema(description = "lieu de naissance de l'étudiant")
+    private String placeOfBirth;
+    @NotNull(message = "{sex required}")
+    @Schema(description = "sexe de l'étudiant")
+    private String sex;
+    @Schema(description = "Nom du père")
+    private String fatherName;
+    @Schema(description = "Nom de la mère")
+    private String motherName;
 }

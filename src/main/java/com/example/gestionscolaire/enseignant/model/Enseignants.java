@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +20,11 @@ public class Enseignants {
     private Long id;
     private String firstName;
     private String lastName;
+    private String photoLink;
     @Column(unique = true, nullable = false)
     private String matricule;
     @ManyToOne
     private Statut status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

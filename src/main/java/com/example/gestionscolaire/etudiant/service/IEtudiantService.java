@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IEtudiantService {
-    EtudiantResDto addEtudiant(EtudiantReqDto etudiantReqDto) throws WriterException, IOException;
+    EtudiantResDto addEtudiant(EtudiantReqDto etudiantReqDto);
+    EtudiantResDto updateEtudiant(EtudiantReqDto etudiantReqDto, String matricule);
+    EtudiantResDto disableEtudiant(String matricule);
     Page<EtudiantResDto> getEtudiants(int page, int size, String sort, String order);
     EtudiantResDto getEtudiantbyId(Long id);
     EtudiantResDto getEtudiantbyMatricule(String matricule);

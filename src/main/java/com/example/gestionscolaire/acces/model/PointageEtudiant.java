@@ -31,6 +31,6 @@ public class PointageEtudiant {
     private LocalTime getTimeOut5;
     @ManyToOne
     private Etudiants etudiant;
-    private TypePointage type;
+//    private TypePointage type;
 
 }
