@@ -12,15 +12,23 @@ import com.example.gestionscolaire.etudiant.model.Etudiants;
 import com.example.gestionscolaire.etudiant.repository.IEtudiantRepo;
 import com.example.gestionscolaire.etudiant.service.IEtudiantService;
 import com.example.gestionscolaire.statut.model.EStatus;
+import com.example.gestionscolaire.statut.model.Statut;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -134,8 +142,32 @@ public class PointageEtudiantServiceImpl implements IPointageEtudiantService {
     }
 
     @Override
-    public List<PointageEtudiantsResDto> pointageEtds() {
-        List<PointageEtudiant> pointageEtudiants = iPointageEtudiantRepo.findAll();
+    public Page<PointageEtudiantsResDto> pointageEtds(String matricule, LocalDate date1, LocalDate date2, int page, int size, String sort, String order) {
+        Specification<PointageEtudiant> specification = ((root, query, criteriaBuilder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (matricule != null && !matricule.isEmpty()){
+                Etudiants etudiants = iEtudiantRepo.findBySchoolMatricule(matricule).get();
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("etudiant")),  etudiants));
+            }
+
+            if (date1 != null && date2 == null) {
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("date")), date1));
+            }
+
+            if (date2 != null && date1 == null) {
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("date")), date2));
+            }
+
+            if (date2 != null && date1 != null) {
+                predicates.add(criteriaBuilder.between(root.get("date"), date1, date2));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new javax.persistence.criteria.Predicate[0]));
+        });
+
+        Page<PointageEtudiant> pointageEtudiants = iPointageEtudiantRepo.findAll(specification, PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort)));
         log.info(String.valueOf(iPointageEtudiantRepo.findAll()));
         List<PointageEtudiantsResDto> pointageEtudiantsResDtos = new ArrayList<>();
 
@@ -182,9 +214,9 @@ public class PointageEtudiantServiceImpl implements IPointageEtudiantService {
             pointageEtudiantsResDtos.add(pointageEtudiantResDto);
         });
 
-        log.info(String.valueOf(pointageEtudiantsResDtos));
+        Page<PointageEtudiantsResDto> pointagePage = new PageImpl<>(pointageEtudiantsResDtos, PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort)), pointageEtudiants.getTotalElements());
 
-        return pointageEtudiantsResDtos;
+        return pointagePage;
     }
 
 }

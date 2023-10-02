@@ -1,5 +1,11 @@
 package com.example.gestionscolaire.enseignant.service.impl;
 
+import com.example.gestionscolaire.Document.entity.DocumentStorageProperties;
+import com.example.gestionscolaire.Document.entity.ETypeDocument;
+import com.example.gestionscolaire.Document.entity.TypeDocument;
+import com.example.gestionscolaire.Document.repository.IDocumentStoragePropertiesRepo;
+import com.example.gestionscolaire.Document.repository.ITypeDocumentRepo;
+import com.example.gestionscolaire.Document.service.IDocumentStorageService;
 import com.example.gestionscolaire.QrCode.QRCodeGenerator;
 import com.example.gestionscolaire.enseignant.dto.EnseignantReqDto;
 import com.example.gestionscolaire.enseignant.dto.EnseignantResDto;
@@ -18,25 +24,29 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 //import org.apache.commons.lang3.RandomStringUtils;
 
@@ -48,10 +58,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class EnseignantServiceImpl implements IEnseignantService {
 
-    @Autowired
-    IEnseignantRepo iEnseignantRepo;
-    @Autowired
-    IStatusRepo iStatusRepo;
+    private final IEnseignantRepo iEnseignantRepo;
+    private final IStatusRepo iStatusRepo;
+    private final ITypeDocumentRepo iTypeDocumentRepo;
+    private final IDocumentStorageService iDocumentStorageService;
+    private final IDocumentStoragePropertiesRepo docStorageRepo;
+    @Value("${app.api.base.url}")
+    private String api_base_url;
 
     @Override
     public EnseignantResDto addProf(EnseignantReqDto enseignantReqDto) {
@@ -70,6 +83,7 @@ public class EnseignantServiceImpl implements IEnseignantService {
         EnseignantReqDto enseignantReqDto = new EnseignantReqDto();
         List<Enseignants> enseignantsList = new ArrayList<>();
 //        try (InputStream inputStream = file.getInputStream()) {
+        List<DocumentStorageProperties> docList = new ArrayList<>();
         Workbook workbook = new XSSFWorkbook(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
         Iterator<Row> rowIterator = sheet.iterator();
@@ -77,6 +91,7 @@ public class EnseignantServiceImpl implements IEnseignantService {
         if (rowIterator.hasNext()) {
             rowIterator.next();
         }
+        TypeDocument typeDocument = iTypeDocumentRepo.findByName(ETypeDocument.IMAGE).orElseThrow(() -> new ResourceNotFoundException("Statut :  " + ETypeDocument.IMAGE + "  not found"));
 
         // Parcourir le reste des lignes
         while (rowIterator.hasNext()) {
@@ -91,18 +106,48 @@ public class EnseignantServiceImpl implements IEnseignantService {
 
             }
 //            log.info("voici le contenu de la cellule2 " + rowData.get(0));
+            if (iEnseignantRepo.findBySchoolMatricule(rowData.get(2)).isPresent()){
+                Enseignants et = iEnseignantRepo.findBySchoolMatricule(rowData.get(10)).get();
+                et.setFirstName(rowData.get(0));
+                et.setLastName(rowData.get(1));
+                et.setUpdatedAt(LocalDateTime.now());
+                enseignantsList.add(et);
+            }else {
+
+
             enseignantReqDto.setFirstName(rowData.get(0));
             enseignantReqDto.setLastName(rowData.get(1));
 //            enseignantReqDto.setMatricule(generateMatriculeProf());
-            rows.add(rowData);
             log.info("voici l'enseignant " + enseignantReqDto);
             Enseignants enseignants = mapToEnseignant(enseignantReqDto);
             enseignants.setMatricule(generateMatriculeProf());
+            enseignants.setSchoolMatricule(rowData.get(2));
+            enseignants.setPhotoLink(api_base_url+"api/enseignant/file/"+rowData.get(2)+"/downloadFile?type=image&docType=jpeg");
             enseignants.setCreatedAt(LocalDateTime.now());
             enseignantsList.add(enseignants);
+            }
+            rows.add(rowData);
+            DocumentStorageProperties doc = docStorageRepo.checkDocumentByOrderId(rowData.get(2), "png", typeDocument.getId());
+            log.info("ce doc {}", doc);
+            if(doc != null) {
+                doc.setDocumentFormat("image/jpeg");
+                doc.setFileName(rowData.get(2) + ".jpeg");
+                doc.setType(typeDocument);
+                log.info("ça existe déjà");
+                docList.add(doc);
+            } else {
+                DocumentStorageProperties newdoc = new DocumentStorageProperties();
+                newdoc.setMatricule(rowData.get(2));
+                newdoc.setDocumentFormat("image/jpeg");
+                newdoc.setType(typeDocument);
+                newdoc.setDocumentType("png");
+                newdoc.setFileName(rowData.get(2) + ".jpeg");
+                docList.add(newdoc);
+            }
 //            iEnseignantRepo.save(enseignants);
         }
         iEnseignantRepo.saveAll(enseignantsList);
+        docStorageRepo.saveAll(docList);
 //        } catch (IOException e){
 //
 //        }
@@ -111,12 +156,8 @@ public class EnseignantServiceImpl implements IEnseignantService {
 
     @Override
     public Page<EnseignantResDto> getProfs(int page, int size, String sort, String order) {
-        Page<Enseignants> products = iEnseignantRepo.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort)));
-
-        EnseignantResDto enseignantResDto;
-        List<EnseignantResDto> enseignantResDtos = new ArrayList<>();
-
-        return new PageImpl<>(products.stream().map(this::mapToEnseignantResponse).collect(Collectors.toList()), PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort)), iEnseignantRepo.findAll().size());
+        Page<Enseignants> enseignantList = iEnseignantRepo.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort)));
+        return new PageImpl<>(enseignantList.stream().map(this::mapToEnseignantResponse).collect(Collectors.toList()), PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort)), iEnseignantRepo.findAll().size());
     }
 
     @Override
@@ -169,6 +210,7 @@ public class EnseignantServiceImpl implements IEnseignantService {
                 .firstName(enseignant.getFirstName())
                 .lastName(enseignant.getLastName())
                 .matricule(enseignant.getMatricule())
+                .schoolMatricule(enseignant.getSchoolMatricule())
                 .status(enseignant.getStatus())
                 .photoLink(enseignant.getPhotoLink())
                 .createdAt(enseignant.getCreatedAt())
@@ -180,13 +222,16 @@ public class EnseignantServiceImpl implements IEnseignantService {
         return Enseignants.builder()
                 .firstName(enseignant.getFirstName())
                 .lastName(enseignant.getLastName())
+                .schoolMatricule(enseignant.getSchoolMatricule())
                 .status(iStatusRepo.getStatutByName(EStatus.ACTIF).get())
                 .build();
     }
 
     public String generateMatriculeProf() {
 //        String internalReference =  "ET" +Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
-        String matricule = "ESG" + (1000 + new Random().nextInt(9000));
+        Calendar date = Calendar.getInstance();
+        String matricule = date.get(Calendar.YEAR) + "ESG" + (1000 + new Random().nextInt(9000));
+//        String matricule = "ESG" + (1000 + new Random().nextInt(9000));
         return matricule;
     }
 }

@@ -32,7 +32,7 @@ public class EtudiantReqDto {
     private String totalPension;
     @NotNull(message = "{dateOfBirth required}")
     @Schema(description = "date de naissance de l'étudiant")
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     @NotNull(message = "{placeOfBirth required}")
     @Schema(description = "lieu de naissance de l'étudiant")
     private String placeOfBirth;
@@ -43,4 +43,6 @@ public class EtudiantReqDto {
     private String fatherName;
     @Schema(description = "Nom de la mère")
     private String motherName;
+    @Schema(description = "Matricule de l'établissement")
+    private String schoolMatricule;
 }

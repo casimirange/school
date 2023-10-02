@@ -1,18 +1,27 @@
 package com.example.gestionscolaire.acces.service.impl;
 
+import com.example.gestionscolaire.acces.dto.PointageEtudiantsResDto;
 import com.example.gestionscolaire.acces.dto.PointageProfReqDto;
 import com.example.gestionscolaire.acces.dto.PointageProfResDto;
+import com.example.gestionscolaire.acces.model.PointageEtudiant;
 import com.example.gestionscolaire.acces.model.PointageProfesseur;
 import com.example.gestionscolaire.acces.model.TypePointage;
 import com.example.gestionscolaire.acces.repository.IPointageProfesseurRepo;
 import com.example.gestionscolaire.acces.service.IPointageProfService;
 import com.example.gestionscolaire.enseignant.model.Enseignants;
 import com.example.gestionscolaire.enseignant.repository.IEnseignantRepo;
+import com.example.gestionscolaire.etudiant.model.Etudiants;
 import com.example.gestionscolaire.statut.model.EStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -133,8 +142,32 @@ log.info("pointage {}", getPointageProf);
     }
 
     @Override
-    public List<PointageProfResDto> pointagesProfs() {
-        List<PointageProfesseur> pointageProfesseurs = iPointageProfesseurRepo.findAll();
+    public Page<PointageProfResDto> pointagesProfs(String matricule, LocalDate date1, LocalDate date2, int page, int size, String sort, String order) {
+        Specification<PointageProfesseur> specification = ((root, query, criteriaBuilder) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (matricule != null && !matricule.isEmpty()){
+                Enseignants enseignants = iEnseignantRepo.findBySchoolMatricule(matricule).get();
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("enseignant")),  enseignants));
+            }
+
+            if (date1 != null && date2 == null) {
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("date")), date1));
+            }
+
+            if (date2 != null && date1 == null) {
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("date")), date2));
+            }
+
+            if (date2 != null && date1 != null) {
+                predicates.add(criteriaBuilder.between(root.get("date"), date1, date2));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new javax.persistence.criteria.Predicate[0]));
+        });
+
+        Page<PointageProfesseur> pointageProfesseurs = iPointageProfesseurRepo.findAll(specification, PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort)));
         log.info(String.valueOf(iPointageProfesseurRepo.findAll()));
         List<PointageProfResDto> pointageProfResDtos = new ArrayList<>();
 
@@ -143,7 +176,7 @@ log.info("pointage {}", getPointageProf);
             pointageProfResDto.setId(x.getId());
             pointageProfResDto.setEnseignant(x.getEnseignant());
             pointageProfResDto.setDate(x.getDate());
-            pointageProfResDto.setType(x.getType());
+//            pointageProfResDto.setType(x.getType());
             pointageProfResDto.setGetTimeIn1(x.getGetTimeIn1());
             pointageProfResDto.setGetTimeIn2(x.getGetTimeIn2());
             pointageProfResDto.setGetTimeIn3(x.getGetTimeIn3());
@@ -181,8 +214,10 @@ log.info("pointage {}", getPointageProf);
             pointageProfResDtos.add(pointageProfResDto);
         });
 
-        log.info(String.valueOf(pointageProfResDtos));
+        Page<PointageProfResDto> pointagePage = new PageImpl<>(pointageProfResDtos, PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort)), pointageProfesseurs.getTotalElements());
 
-        return pointageProfResDtos;
+        return pointagePage;
+
+//        return pointageProfResDtos;
     }
 }

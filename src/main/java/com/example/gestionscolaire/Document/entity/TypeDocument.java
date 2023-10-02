@@ -1,5 +1,6 @@
 package com.example.gestionscolaire.Document.entity;
 
+import com.example.gestionscolaire.Users.entity.EStatusUser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,8 +10,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
@@ -26,4 +26,7 @@ public class TypeDocument {
 	@Enumerated(EnumType.STRING)
 	private ETypeDocument name;
 
+	public TypeDocument(ETypeDocument name) {
+		this.name = name;
+	}
 }

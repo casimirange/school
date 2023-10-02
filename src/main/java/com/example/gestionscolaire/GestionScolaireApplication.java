@@ -15,6 +15,9 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Calendar;
+import java.util.Random;
+
 @SpringBootApplication
 @Configuration
 @EnableConfigurationProperties({DocumentStorageProperties.class, DocumentStorageProfProperties.class})
@@ -27,6 +30,9 @@ public class GestionScolaireApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(GestionScolaireApplication.class, args);
+        Calendar date = Calendar.getInstance();
+        String matricule = date.get(Calendar.YEAR) + "ET" + (1000 + new Random().nextInt(9000));
+        System.out.println(matricule);
     }
 
     @Bean

@@ -23,9 +23,11 @@ public class Etudiants {
     private String lastName;
     @Column(unique = true, nullable = false)
     private String matricule;
+    @Column(unique = true, nullable = false)
+    private String schoolMatricule;
     private String classe;
     private String photoLink;
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private String placeOfBirth;
     private String sex;
     @Column(nullable = true)

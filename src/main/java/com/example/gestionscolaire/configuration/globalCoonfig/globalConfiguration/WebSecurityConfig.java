@@ -69,6 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/users/{id:[0-9]+}/email").permitAll()
 				.antMatchers(HttpMethod.PUT, "/api/pointageEtudiants").permitAll()
 				.antMatchers(HttpMethod.PUT, "/api/pointageProf").permitAll()
+				.antMatchers( "/api/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/users/{id:[0-9]+}/code").permitAll()
 				.antMatchers(jwtUtils.getUri()).permitAll()
 				.antMatchers(HttpMethod.GET, "/api-docs/**" ,"/api-docs-ui/**", "/swagger-ui/**").permitAll()

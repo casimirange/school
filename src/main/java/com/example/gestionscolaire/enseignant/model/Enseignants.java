@@ -23,6 +23,8 @@ public class Enseignants {
     private String photoLink;
     @Column(unique = true, nullable = false)
     private String matricule;
+    @Column(unique = true, nullable = false)
+    private String schoolMatricule;
     @ManyToOne
     private Statut status;
     private LocalDateTime createdAt;

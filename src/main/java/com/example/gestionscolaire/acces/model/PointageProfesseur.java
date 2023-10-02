@@ -31,6 +31,5 @@ public class PointageProfesseur {
     private LocalTime getTimeOut5;
     @ManyToOne
     private Enseignants enseignant;
-    private TypePointage type;
 
 }

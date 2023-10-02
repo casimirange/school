@@ -23,12 +23,13 @@ public class EtudiantResDto {
     private String classe;
     private String totalPension;
     private String montantPay;
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private String placeOfBirth;
     private String photoLink;
     private String sex;
     private String fatherName;
     private String motherName;
+    private String schoolMatricule;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

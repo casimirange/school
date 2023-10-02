@@ -7,15 +7,15 @@ import javax.persistence.*;
 
 
 @Entity
-@Getter
-@Setter
+@Data
 @ConfigurationProperties(prefix = "file")
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = { "documentId", "fileName", "documentType", "documentFormat", "type", "seance" })
 @Table(name = "seance_documents")
 public class DocumentStorageProperties {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private Long documentId;
 

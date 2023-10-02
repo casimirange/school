@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface IEnseignantRepo extends JpaRepository<Enseignants, Long> {
     Optional<Enseignants> findByMatricule(String matricule);
+    Optional<Enseignants> findBySchoolMatricule(String schoolMatricule);
 }

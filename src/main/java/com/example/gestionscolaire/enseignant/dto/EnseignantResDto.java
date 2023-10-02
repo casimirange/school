@@ -4,8 +4,10 @@ import com.example.gestionscolaire.statut.model.Statut;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.core.io.Resource;
 import lombok.NoArgsConstructor;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,8 +19,10 @@ public class EnseignantResDto {
     private String firstName;
     private String lastName;
     private String matricule;
+    private String schoolMatricule;
     private String photoLink;
     private Statut status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private byte[] image;
 }

@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -102,10 +104,17 @@ public class EtudiantController {
             @ApiResponse(responseCode = "403", description = "Forbidden : accès refusé", content = @Content(mediaType = "Application/Json")),
             @ApiResponse(responseCode = "401", description = "Full authentication is required to access this resource", content = @Content(mediaType = "Application/Json"))})
     public ResponseEntity<?> getAllEtudiants(@RequestParam(required = false, value = "page", defaultValue = "0") String pageParam,
-                                              @RequestParam(required = false, value = "size", defaultValue = ApplicationConstant.DEFAULT_SIZE_PAGINATION) String sizeParam,
-                                              @RequestParam(required = false, defaultValue = "id") String sort,
-                                              @RequestParam(required = false, defaultValue = "desc") String order) {
-        return ResponseEntity.ok().body(iEtudiantService.getEtudiants(Integer.parseInt(pageParam), Integer.parseInt(sizeParam), sort, order));
+                                             @RequestParam(required = false, value = "size", defaultValue = ApplicationConstant.DEFAULT_SIZE_PAGINATION) String sizeParam,
+                                             @RequestParam(required = false, defaultValue = "id") String sort,
+                                             @RequestParam(required = false, value = "firstName") String firstName,
+                                             @RequestParam(required = false, value = "lastName") String lastName,
+                                             @RequestParam(required = false, value = "schoolMatricule") String matricule,
+                                             @RequestParam(required = false, value = "classe") String classe,
+                                             @RequestParam(required = false, value = "status") String statut,
+                                             @RequestParam(required = false, value = "sex") String sexe,
+                                             @RequestParam(required = false, defaultValue = "desc") String order) {
+        return ResponseEntity.ok().body(iEtudiantService.getEtudiants(firstName, lastName, matricule,
+                classe, statut, sexe, Integer.parseInt(pageParam), Integer.parseInt(sizeParam), sort, order));
     }
 
     @GetMapping("/{matricule}")

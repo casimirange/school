@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -127,7 +128,7 @@ public class EnseignantController {
             @ApiResponse(responseCode = "401", description = "Full authentication is required to access this resource", content = @Content(mediaType = "Application/Json")),
             @ApiResponse(responseCode = "403", description = "Forbidden : accès refusé", content = @Content(mediaType = "Application/Json")),
             @ApiResponse(responseCode = "500", description = "Internal Server Error ", content = @Content(mediaType = "Application/Json")),})
-    public ResponseEntity<?> getEnseignantsByMatricule(@PathVariable String matricule) {
+    public ResponseEntity<?> getEnseignantsByMatricule(@PathVariable String matricule, HttpServletRequest request) throws IOException {
         EnseignantResDto enseignantResDto = iEnseignantService.getProfbyMatricule(matricule);
         return ResponseEntity.ok().body(enseignantResDto);
     }
@@ -145,6 +146,7 @@ public class EnseignantController {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=qrcode.pdf");
         return ResponseEntity.ok().headers(headers).contentType(MediaType.IMAGE_PNG).body(image);
+//        return ResponseEntity.ok().body(image);
     }
 
     @Operation(summary = "Importer la photo de l'enseigant", tags = "Enseignants", responses = {
@@ -198,7 +200,8 @@ public class EnseignantController {
             if (contentType == null) {
                 contentType = "application/octet-stream";
             }
-            return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                     .body(resource);
         } else {
