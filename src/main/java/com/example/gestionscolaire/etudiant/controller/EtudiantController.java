@@ -172,8 +172,8 @@ public class EtudiantController {
 
         Etudiants etudiant = iEtudiantRepo.findByMatricule(matricule).get();
         TypeDocument typeDocument = iTypeDocumentRepo.findByName(ETypeDocument.IMAGE).orElseThrow(()-> new ResourceNotFoundException("Statut :  "  +  ETypeDocument.IMAGE +  "  not found"));
-        iDocumentStorageService.storeFile(file, matricule, "png", typeDocument);
-        String fileDownloadUri = api_base_url+"api/etudiant/file/" + matricule + "/downloadFile?type=image&docType=png";
+        iDocumentStorageService.storeFile(file, etudiant.getSchoolMatricule(), "png", typeDocument);
+        String fileDownloadUri = api_base_url+"api/etudiant/file/" + etudiant.getSchoolMatricule() + "/downloadFile?type=image&docType=png";
         etudiant.setPhotoLink(fileDownloadUri);
         etudiant.setUpdatedAt(LocalDateTime.now());
         iEtudiantRepo.save(etudiant);

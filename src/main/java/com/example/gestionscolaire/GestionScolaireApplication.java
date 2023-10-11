@@ -31,7 +31,8 @@ public class GestionScolaireApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(GestionScolaireApplication.class, args);
         Calendar date = Calendar.getInstance();
-        String matricule = date.get(Calendar.YEAR) + "ET" + (1000 + new Random().nextInt(9000));
+        String year = date.get(Calendar.YEAR)+"";
+        String matricule = year.substring(2,4) + "ET" + (1000 + new Random().nextInt(9000));
         System.out.println(matricule);
     }
 

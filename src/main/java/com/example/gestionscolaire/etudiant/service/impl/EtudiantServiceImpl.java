@@ -353,7 +353,9 @@ public class EtudiantServiceImpl implements IEtudiantService {
     public String generateMatriculeEtudiant() {
 //        String internalReference =  "ET" +Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
         Calendar date = Calendar.getInstance();
-        String matricule = date.get(Calendar.YEAR) + "ET" + (1000 + new Random().nextInt(9000));
+        String year = date.get(Calendar.YEAR)+"";
+        String matricule = year.substring(2,4) + "ET" + (1000 + new Random().nextInt(9000));
+//        String matricule = date.get(Calendar.YEAR) + "ET" + (1000 + new Random().nextInt(9000));
         return matricule;
     }
 

@@ -122,7 +122,7 @@ public class EnseignantServiceImpl implements IEnseignantService {
             Enseignants enseignants = mapToEnseignant(enseignantReqDto);
             enseignants.setMatricule(generateMatriculeProf());
             enseignants.setSchoolMatricule(rowData.get(2));
-            enseignants.setPhotoLink(api_base_url+"api/enseignant/file/"+rowData.get(2)+"/downloadFile?type=image&docType=jpeg");
+            enseignants.setPhotoLink(api_base_url+"api/enseignants/file/"+rowData.get(2)+"/downloadFile?type=image&docType=jpeg");
             enseignants.setCreatedAt(LocalDateTime.now());
             enseignantsList.add(enseignants);
             }
@@ -230,7 +230,9 @@ public class EnseignantServiceImpl implements IEnseignantService {
     public String generateMatriculeProf() {
 //        String internalReference =  "ET" +Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
         Calendar date = Calendar.getInstance();
-        String matricule = date.get(Calendar.YEAR) + "ESG" + (1000 + new Random().nextInt(9000));
+        String year = date.get(Calendar.YEAR)+"";
+        String matricule = year.substring(2,4) + "ESG" + (1000 + new Random().nextInt(9000));
+//        String matricule = date.get(Calendar.YEAR) + "ESG" + (1000 + new Random().nextInt(9000));
 //        String matricule = "ESG" + (1000 + new Random().nextInt(9000));
         return matricule;
     }

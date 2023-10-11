@@ -1,5 +1,6 @@
 package com.example.gestionscolaire.statut.model;
 
+import com.example.gestionscolaire.Users.entity.EStatusUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,4 +20,8 @@ public class Statut {
     private Long id;
 
     private EStatus name;
+
+    public Statut(EStatus name) {
+        this.name = name;
+    }
 }

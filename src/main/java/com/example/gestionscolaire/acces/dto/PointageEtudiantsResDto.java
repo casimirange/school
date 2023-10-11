@@ -27,5 +27,6 @@ public class PointageEtudiantsResDto {
     private LocalTime getTimeOut5;
     private LocalTime getTime;
     private Etudiants etudiants;
+    private String matricule;
     private TypePointage type;
 }

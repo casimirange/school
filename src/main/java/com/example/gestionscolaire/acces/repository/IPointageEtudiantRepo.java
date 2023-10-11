@@ -1,5 +1,6 @@
 package com.example.gestionscolaire.acces.repository;
 
+import com.example.gestionscolaire.acces.dto.PointageEtudiantsResDto;
 import com.example.gestionscolaire.acces.model.PointageEtudiant;
 import com.example.gestionscolaire.etudiant.model.Etudiants;
 import org.springframework.data.domain.Page;

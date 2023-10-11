@@ -45,6 +45,7 @@ public class PointageProfServiceImpl implements IPointageProfService {
                 log.info("non");
                 PointageProfesseur pointageProf = new PointageProfesseur();
                 pointageProf.setDate(LocalDate.now());
+                pointageProf.setMatricule(prof.getSchoolMatricule());
 //                if (pointageProfReqDto.getType().equals(TypePointage.ENTREE)) {
                     pointageProf.setGetTimeIn1(LocalTime.now());
 //                } else {
@@ -148,8 +149,8 @@ log.info("pointage {}", getPointageProf);
             List<Predicate> predicates = new ArrayList<>();
 
             if (matricule != null && !matricule.isEmpty()){
-                Enseignants enseignants = iEnseignantRepo.findBySchoolMatricule(matricule).get();
-                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("enseignant")),  enseignants));
+//                Enseignants enseignants = iEnseignantRepo.findBySchoolMatricule(matricule).get();
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("matricule")),  "%"+matricule+"%"));
             }
 
             if (date1 != null && date2 == null) {

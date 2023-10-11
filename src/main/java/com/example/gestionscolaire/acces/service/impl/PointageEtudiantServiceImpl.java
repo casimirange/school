@@ -46,6 +46,7 @@ public class PointageEtudiantServiceImpl implements IPointageEtudiantService {
             if (!iPointageEtudiantRepo.existsPointageEtudiantByDateAndEtudiant(LocalDate.now(), etudiants)) {
                 PointageEtudiant pointageEtudiant = new PointageEtudiant();
                 pointageEtudiant.setDate(LocalDate.now());
+                pointageEtudiant.setMatricule(etudiants.getSchoolMatricule());
 //                if (pointageEtudiantsReqDto.getType().equals(TypePointage.ENTREE)) {
                     pointageEtudiant.setGetTimeIn1(LocalTime.now());
 //                } else {
@@ -148,8 +149,10 @@ public class PointageEtudiantServiceImpl implements IPointageEtudiantService {
             List<Predicate> predicates = new ArrayList<>();
 
             if (matricule != null && !matricule.isEmpty()){
-                Etudiants etudiants = iEtudiantRepo.findBySchoolMatricule(matricule).get();
-                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("etudiant")),  etudiants));
+//                if (!iEtudiantRepo.findBySchoolMatriculeLikeIgnoreCase(matricule).isEmpty()){
+//                    Etudiants etudiants = iEtudiantRepo.findBySchoolMatricule(matricule).get();
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("matricule")),  "%"+matricule+"%"));
+//                }
             }
 
             if (date1 != null && date2 == null) {

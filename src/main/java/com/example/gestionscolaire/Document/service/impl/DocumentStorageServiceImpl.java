@@ -53,7 +53,7 @@ public class DocumentStorageServiceImpl implements IDocumentStorageService {
     @Override
     @Transactional
     public String storeFile(MultipartFile file, String matricule, String docType, TypeDocument typeDocument) {
-        Etudiants etudiant = iEtudiantRepo.findByMatricule(matricule).get();
+        Etudiants etudiant = iEtudiantRepo.findBySchoolMatricule(matricule).get();
         // Normalize file name
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
         String fileName = "";
@@ -69,12 +69,12 @@ public class DocumentStorageServiceImpl implements IDocumentStorageService {
             } catch (Exception e) {
                 fileExtension = "";
             }
-            fileName = etudiant.getMatricule() + fileExtension;
+            fileName = etudiant.getSchoolMatricule() + fileExtension;
             // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            DocumentStorageProperties doc = docStorageRepo.checkDocumentByOrderId(matricule, docType, typeDocument.getId());
+            DocumentStorageProperties doc = docStorageRepo.checkDocumentByOrderId(etudiant.getSchoolMatricule(), docType, typeDocument.getId());
             if(doc != null) {
                 doc.setDocumentFormat(file.getContentType());
                 doc.setFileName(fileName);
@@ -82,7 +82,7 @@ public class DocumentStorageServiceImpl implements IDocumentStorageService {
                 docStorageRepo.save(doc);
             } else {
                 DocumentStorageProperties newDoc = new DocumentStorageProperties();
-                newDoc.setMatricule(matricule);
+                newDoc.setMatricule(etudiant.getSchoolMatricule());
                 newDoc.setDocumentFormat(file.getContentType());
                 newDoc.setFileName(fileName);
                 newDoc.setType(typeDocument);
@@ -98,7 +98,7 @@ public class DocumentStorageServiceImpl implements IDocumentStorageService {
     @Override
     @Transactional
     public String storeProfFile(MultipartFile file, String matricule, String docType, TypeDocument typeDocument) {
-        Enseignants etudiant = iEnseignantRepo.findByMatricule(matricule).get();
+        Enseignants etudiant = iEnseignantRepo.findBySchoolMatricule(matricule).get();
         // Normalize file name
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
         String fileName = "";
@@ -114,12 +114,12 @@ public class DocumentStorageServiceImpl implements IDocumentStorageService {
             } catch (Exception e) {
                 fileExtension = "";
             }
-            fileName = etudiant.getMatricule() + fileExtension;
+            fileName = etudiant.getSchoolMatricule() + fileExtension;
             // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            DocumentStorageProperties doc = docStorageRepo.checkDocumentByOrderId(matricule, docType, typeDocument.getId());
+            DocumentStorageProperties doc = docStorageRepo.checkDocumentByOrderId(etudiant.getSchoolMatricule(), docType, typeDocument.getId());
             if(doc != null) {
                 doc.setDocumentFormat(file.getContentType());
                 doc.setFileName(fileName);
@@ -127,7 +127,7 @@ public class DocumentStorageServiceImpl implements IDocumentStorageService {
                 docStorageRepo.save(doc);
             } else {
                 DocumentStorageProperties newDoc = new DocumentStorageProperties();
-                newDoc.setMatricule(matricule);
+                newDoc.setMatricule(etudiant.getSchoolMatricule());
                 newDoc.setDocumentFormat(file.getContentType());
                 newDoc.setFileName(fileName);
                 newDoc.setType(typeDocument);

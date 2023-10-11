@@ -115,7 +115,7 @@ public class EnseignantController {
             @ApiResponse(responseCode = "401", description = "Full authentication is required to access this resource", content = @Content(mediaType = "Application/Json"))})
     public ResponseEntity<?> getAllEnseignant(@RequestParam(required = false, value = "page", defaultValue = "0") String pageParam,
                                                    @RequestParam(required = false, value = "size", defaultValue = ApplicationConstant.DEFAULT_SIZE_PAGINATION) String sizeParam,
-                                                   @RequestParam(required = false, defaultValue = "id") String sort,
+                                                   @RequestParam(required = false, defaultValue = "firstName") String sort,
                                                    @RequestParam(required = false, defaultValue = "desc") String order) {
         return ResponseEntity.ok().body(iEnseignantService.getProfs(Integer.parseInt(pageParam), Integer.parseInt(sizeParam), sort, order));
     }
@@ -160,8 +160,8 @@ public class EnseignantController {
 
         Enseignants enseignants = iEnseignantRepo.findByMatricule(matricule).get();
         TypeDocument typeDocument = iTypeDocumentRepo.findByName(ETypeDocument.IMAGE).orElseThrow(()-> new ResourceNotFoundException("Statut :  "  +  ETypeDocument.IMAGE +  "  not found"));
-        iDocumentStorageService.storeProfFile(file, matricule, "png", typeDocument);
-        String fileDownloadUri = api_base_url+"api/enseignants/file/" + matricule + "/downloadFile?type=image&docType=png";
+        iDocumentStorageService.storeProfFile(file, enseignants.getSchoolMatricule(), "png", typeDocument);
+        String fileDownloadUri = api_base_url+"api/enseignants/file/" + enseignants.getSchoolMatricule() + "/downloadFile?type=image&docType=png";
         enseignants.setPhotoLink(fileDownloadUri);
         enseignants.setUpdatedAt(LocalDateTime.now());
         iEnseignantRepo.save(enseignants);
