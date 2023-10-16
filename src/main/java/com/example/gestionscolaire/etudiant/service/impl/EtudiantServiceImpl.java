@@ -19,6 +19,7 @@ import com.example.gestionscolaire.statut.repository.IStatusRepo;
 import com.google.zxing.WriterException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -354,7 +355,9 @@ public class EtudiantServiceImpl implements IEtudiantService {
 //        String internalReference =  "ET" +Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
         Calendar date = Calendar.getInstance();
         String year = date.get(Calendar.YEAR)+"";
-        String matricule = year.substring(2,4) + "ET" + (1000 + new Random().nextInt(9000));
+//        String matricule = year.substring(2,4) + "ET" + (1000 + new Random().nextInt(9000));
+        String matricule = year.substring(2, 4) + "ET" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
+
 //        String matricule = date.get(Calendar.YEAR) + "ET" + (1000 + new Random().nextInt(9000));
         return matricule;
     }

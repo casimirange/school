@@ -18,6 +18,7 @@ import com.example.gestionscolaire.statut.repository.IStatusRepo;
 import com.google.zxing.WriterException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -45,6 +46,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -107,7 +109,7 @@ public class EnseignantServiceImpl implements IEnseignantService {
             }
 //            log.info("voici le contenu de la cellule2 " + rowData.get(0));
             if (iEnseignantRepo.findBySchoolMatricule(rowData.get(2)).isPresent()){
-                Enseignants et = iEnseignantRepo.findBySchoolMatricule(rowData.get(10)).get();
+                Enseignants et = iEnseignantRepo.findBySchoolMatricule(rowData.get(2)).get();
                 et.setFirstName(rowData.get(0));
                 et.setLastName(rowData.get(1));
                 et.setUpdatedAt(LocalDateTime.now());
@@ -231,7 +233,9 @@ public class EnseignantServiceImpl implements IEnseignantService {
 //        String internalReference =  "ET" +Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
         Calendar date = Calendar.getInstance();
         String year = date.get(Calendar.YEAR)+"";
-        String matricule = year.substring(2,4) + "ESG" + (1000 + new Random().nextInt(9000));
+//        String matricule = year.substring(2,4) + "ESG" + (1000 + new Random().nextInt(9000));
+        String matricule = year.substring(2, 4) + "ESG" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
+//        String matricule = year.substring(2,4) + "ESG" + Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
 //        String matricule = date.get(Calendar.YEAR) + "ESG" + (1000 + new Random().nextInt(9000));
 //        String matricule = "ESG" + (1000 + new Random().nextInt(9000));
         return matricule;

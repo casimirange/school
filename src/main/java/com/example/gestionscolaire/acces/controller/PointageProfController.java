@@ -1,13 +1,20 @@
 package com.example.gestionscolaire.acces.controller;
 
+import com.example.gestionscolaire.acces.dto.MessageResponseDto;
 import com.example.gestionscolaire.acces.dto.PointageProfReqDto;
 import com.example.gestionscolaire.acces.dto.PointageProfResDto;
 import com.example.gestionscolaire.acces.model.PointageProfesseur;
 import com.example.gestionscolaire.acces.service.IPointageProfService;
 import com.example.gestionscolaire.configuration.globalCoonfig.globalConfiguration.ApplicationConstant;
+import com.example.gestionscolaire.enseignant.dto.EnseignantResDto;
+import com.example.gestionscolaire.enseignant.service.IEnseignantService;
 import com.example.gestionscolaire.etudiant.dto.EtudiantReqDto;
 import com.example.gestionscolaire.etudiant.dto.EtudiantResDto;
+import com.example.gestionscolaire.etudiant.service.IEtudiantService;
+import com.example.gestionscolaire.statut.model.EStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +29,17 @@ import java.util.List;
 @CrossOrigin("*")
 public class PointageProfController {
     private final IPointageProfService iPointageProfService;
+    private final IEnseignantService iEnseignantService;
+    private final ResourceBundleMessageSource messageSource;
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PointageProfesseur> savePointageProf(@RequestBody PointageProfReqDto pointageProfReqDto) {
+    public ResponseEntity<?> savePointageProf(@RequestBody PointageProfReqDto pointageProfReqDto) {
+        EnseignantResDto etudiants = iEnseignantService.getProfbyMatricule(pointageProfReqDto.getMatricule());
+        if (etudiants.getStatus().getName().equals(EStatus.INACTIF)){
+            return ResponseEntity.badRequest().body(new MessageResponseDto(HttpStatus.BAD_REQUEST,
+                    messageSource.getMessage("messages.prof_inactif", null, LocaleContextHolder.getLocale())));
+        }
         return ResponseEntity.ok().body(iPointageProfService.enregistrerPointage(pointageProfReqDto));
     }
 

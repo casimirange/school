@@ -9,12 +9,15 @@ import com.example.gestionscolaire.configuration.scolarite.model.Control;
 import com.example.gestionscolaire.configuration.scolarite.service.IConrolService;
 import com.example.gestionscolaire.etudiant.dto.EtudiantResDto;
 import com.example.gestionscolaire.etudiant.service.IEtudiantService;
+import com.example.gestionscolaire.statut.model.EStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +36,16 @@ public class PointageEtudiantsController {
     private final IConrolService iConrolService;
     private final IEtudiantService iEtudiantService;
 
+    private final ResourceBundleMessageSource messageSource;
+
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> savePointageEtd(@RequestBody PointageEtudiantsReqDto pointageEtudiantsReqDto) {
         EtudiantResDto etudiants = iEtudiantService.getEtudiantbyMatricule(pointageEtudiantsReqDto.getMatricule());
-        System.out.println("et :"+etudiants);
+        if (etudiants.getStatus().getName().equals(EStatus.INACTIF)){
+            return ResponseEntity.badRequest().body(new MessageResponseDto(HttpStatus.BAD_REQUEST,
+                    messageSource.getMessage("messages.etudiant_inactif", null, LocaleContextHolder.getLocale())));
+        }
         if (iConrolService.existControlByEtat(true)){
             Control control = iConrolService.findControlByEtat(true);
             LocalDateTime now = LocalDateTime.now();

@@ -24,16 +24,16 @@ public class UserReqDto {
 
 	@Size(min = 6,message = "{password.lenght}")
 	@NotNull(message = "{password.required}")
-	@Pattern.List({
-			@Pattern(regexp = "(?=.*[0-9]).+", message = "{password.number}")
-			,
-			@Pattern(regexp = "(?=.*[a-z]).+", message = "{password.lowercase}")
-			,
-			@Pattern(regexp = "(?=.*[A-Z]).+", message = "{password.upercase}")
-			,
-			@Pattern(regexp = "(?=.*[!@#$%^&*+=?-_()/\"\\.,<>~`;:]).+", message = "{password.sepcialcaracter}")
-			,
-			@Pattern(regexp = "(?=\\S+$).+", message = "{password.spacer}")})
+//	@Pattern.List({
+//			@Pattern(regexp = "(?=.*[0-9]).+", message = "{password.number}")
+//			,
+//			@Pattern(regexp = "(?=.*[a-z]).+", message = "{password.lowercase}")
+//			,
+//			@Pattern(regexp = "(?=.*[A-Z]).+", message = "{password.upercase}")
+//			,
+//			@Pattern(regexp = "(?=.*[!@#$%^&*+=?-_()/\"\\.,<>~`;:]).+", message = "{password.sepcialcaracter}")
+//			,
+//			@Pattern(regexp = "(?=\\S+$).+", message = "{password.spacer}")})
 	@Schema(description = "Mot de passe")
 	private String password;
 
