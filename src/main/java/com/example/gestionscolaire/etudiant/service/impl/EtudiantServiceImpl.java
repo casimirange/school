@@ -166,6 +166,7 @@ public class EtudiantServiceImpl implements IEtudiantService {
         InputStream inputStream = file.getInputStream();
         EtudiantReqDto etudiantReqDto = new EtudiantReqDto();
         List<Etudiants> etudiantsList = new ArrayList<>();
+        Set<String> matriculeList = new HashSet<>();
 //        DocumentStorageProperties newDoc = new DocumentStorageProperties();
 
         List<DocumentStorageProperties> docList = new ArrayList<>();
@@ -180,79 +181,70 @@ public class EtudiantServiceImpl implements IEtudiantService {
 
         TypeDocument typeDocument = iTypeDocumentRepo.findByName(ETypeDocument.IMAGE).orElseThrow(() -> new ResourceNotFoundException("Statut :  " + ETypeDocument.IMAGE + "  not found"));
         // Parcourir le reste des lignes
-//        newDoc.setMatricule("matricule");
-//        newDoc.setDocumentFormat("image/jpeg");
-//        newDoc.setType(typeDocument);
-//        newDoc.setDocumentType("png");
-//        newDoc.setFileName("matricule" + ".jpeg");
-//        docList.add(newDoc);
-//        doc.setMatricule("matriculesssss");
-//        doc.setDocumentFormat("image/jpeg");
-//        doc.setType(typeDocument);
-//        doc.setDocumentType("png");
-//        doc.setFileName("matriculesssss" + ".jpeg");
-//        docList.add(doc);
-//        log.info("type {}", typeDocument.getName());
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
             List<String> rowData = new ArrayList<>();
             Iterator<Cell> cellIterator = row.cellIterator();
-            while (cellIterator.hasNext()) {
-                Cell cell = cellIterator.next();
-                rowData.add(cell.toString());
+//            while (cellIterator.hasNext()) {
+//                Cell cell = cellIterator.next();
+//                rowData.add(cell.toString());
+//            }
+            for (int i = 0; i <= 10; i++)
+            {
+                rowData.add(String.valueOf(row.getCell(i)));
             }
-//            String matricule = rowData.get(10);
 
 
-//            log.info("sex {}", etudiantReqDto.getSex());
-            int day = 0,year = 0 ;
-            String[] caracteres = rowData.get(4).split("-");
-            log.info("date {}", rowData.get(4));
-            year =  Integer.parseInt(caracteres[2]);
-            log.info("year {}", year);
-            day = Integer.parseInt(caracteres[0]);
-            log.info("day {}", day);
-            String mois = caracteres[1];
-            switch (mois) {
-                case "janv.":
-                    mois = "JANUARY";
-                    break;
-                case "févr.":
-                    mois = "FEBRUARY";
-                    break;
-                case "mars":
-                    mois = "MARCH";
-                    break;
-                case "avr.":
-                    mois = "APRIL";
-                    break;
-                case "mai":
-                    mois = "MAY";
-                    break;
-                case "juin":
-                    mois = "JUNE";
-                    break;
-                case "juil.":
-                    mois = "JULY";
-                    break;
-                case "août":
-                    mois = "AUGUST";
-                    break;
-                case "sept.":
-                    mois = "SEPTEMBER";
-                    break;
-                case "oct.":
-                    mois = "OCTOBER";
-                    break;
-                case "nov.":
-                    mois = "NOVEMBER";
-                    break;
-                case "déc.":
-                    mois = "DECEMBER";
-                    break;
+            if (!rowData.get(4).isEmpty()){
+                String[] caracteres = rowData.get(4).split("-");
+
+                int year =  Integer.parseInt(caracteres[2]);
+                int day = Integer.parseInt(caracteres[0]);
+                String mois = caracteres[1];
+                switch (mois) {
+                    case "janv.":
+                        mois = "JANUARY";
+                        break;
+                    case "févr.":
+                        mois = "FEBRUARY";
+                        break;
+                    case "mars":
+                        mois = "MARCH";
+                        break;
+                    case "avr.":
+                        mois = "APRIL";
+                        break;
+                    case "mai":
+                        mois = "MAY";
+                        break;
+                    case "juin":
+                        mois = "JUNE";
+                        break;
+                    case "juil.":
+                        mois = "JULY";
+                        break;
+                    case "août":
+                        mois = "AUGUST";
+                        break;
+                    case "sept.":
+                        mois = "SEPTEMBER";
+                        break;
+                    case "oct.":
+                        mois = "OCTOBER";
+                        break;
+                    case "nov.":
+                        mois = "NOVEMBER";
+                        break;
+                    case "déc.":
+                        mois = "DECEMBER";
+                        break;
+                }
+                etudiantReqDto.setDateOfBirth(LocalDate.of(year, Month.valueOf(mois), day));
+            }else {
+                etudiantReqDto.setDateOfBirth(null);
             }
-            log.info("month1 {}", caracteres[1]);
-            log.info("month2 {}", LocalDate.of(year, Month.valueOf(mois), day));
+
+
             if (iEtudiantRepo.findBySchoolMatricule(rowData.get(10)).isPresent()){
                 Etudiants et = iEtudiantRepo.findBySchoolMatricule(rowData.get(10)).get();
                 et.setClasse(rowData.get(2));
@@ -265,7 +257,6 @@ public class EtudiantServiceImpl implements IEtudiantService {
                 etudiantReqDto.setLastName(rowData.get(1));
                 etudiantReqDto.setClasse(rowData.get(2));
                 etudiantReqDto.setSex(rowData.get(3));
-                etudiantReqDto.setDateOfBirth(LocalDate.of(year, Month.valueOf(mois), day));
     //            log.info("date {}", etudiantReqDto.getDateOfBirth());
                 etudiantReqDto.setPlaceOfBirth(rowData.get(5));
                 etudiantReqDto.setFatherName(!rowData.get(6).isEmpty() ? rowData.get(6) : "N/A");
@@ -274,19 +265,36 @@ public class EtudiantServiceImpl implements IEtudiantService {
                 etudiantReqDto.setMontantPay(rowData.get(9));
                 etudiantReqDto.setSchoolMatricule(rowData.get(10));
                 Etudiants etudiants = mapToEtudiant(etudiantReqDto);
-                etudiants.setMatricule(generateMatriculeEtudiant());
+                String matricule = generateMatriculeEtudiant();
+//                matriculeList.add(matricule);
+                log.info("liste de matricule {}", matriculeList);
+                if (matriculeList.isEmpty()){
+                    matriculeList.add(matricule);
+                    log.info("premier matricule {}", matriculeList);
+                } else {
+                    boolean contient = matriculeList.contains(matricule);
+                    while (contient) {
+                        log.info("déjà généré {}", matricule);
+                        matricule = generateMatriculeEtudiant();
+                        contient = matriculeList.contains(matricule);
+                    }
+                    matriculeList.add(matricule);
+                }
+                log.info("matricule final {}", matricule);
+                log.info("liste de matricules {}", matriculeList);
+                etudiants.setMatricule(matricule);
                 etudiants.setCreatedAt(LocalDateTime.now());
                 etudiants.setPhotoLink(api_base_url+"api/etudiant/file/"+rowData.get(10)+"/downloadFile?type=image&docType=jpeg");
                 etudiantsList.add(etudiants);
             }
             rows.add(rowData);
             DocumentStorageProperties doc = docStorageRepo.checkDocumentByOrderId(rowData.get(10), "png", typeDocument.getId());
-            log.info("ce doc {}", doc);
+//            log.info("ce doc {}", doc);
             if(doc != null) {
                 doc.setDocumentFormat("image/jpeg");
                 doc.setFileName(rowData.get(10) + ".jpeg");
                 doc.setType(typeDocument);
-                log.info("ça existe déjà");
+//                log.info("ça existe déjà");
                 docList.add(doc);
             } else {
             DocumentStorageProperties newdoc = new DocumentStorageProperties();
@@ -301,7 +309,7 @@ public class EtudiantServiceImpl implements IEtudiantService {
 //            log.info("doc {}", newDoc);
 
 
-            log.info("liste2 {}", etudiantsList);
+//            log.info("liste2 {}", etudiantsList);
         }
 
 //        log.info("lisdoc {}", docList);
@@ -355,9 +363,23 @@ public class EtudiantServiceImpl implements IEtudiantService {
 //        String internalReference =  "ET" +Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
         Calendar date = Calendar.getInstance();
         String year = date.get(Calendar.YEAR)+"";
+        String jour = date.get(Calendar.DAY_OF_MONTH)+"";
+        String heure = date.get(Calendar.HOUR)+"";
+        String mois = date.get(Calendar.MONTH)+"";
+        String min = date.get(Calendar.MINUTE)+"";
+        String sec = date.get(Calendar.SECOND)+"";
+        String mil = date.get(Calendar.MILLISECOND)+"";
 //        String matricule = year.substring(2,4) + "ET" + (1000 + new Random().nextInt(9000));
-        String matricule = year.substring(2, 4) + "ET" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
-
+//        String matricule = year.substring(2, 4) + "ET" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
+//        String matricule = year.substring(2, 4) + "ET" + RandomStringUtils.random(4, 40, 150, true, true);
+//        String matricule = year.substring(2, 4) + "ET" + RandomStringUtils.random(4, 40, 150, true, true);
+        String matricule = "ET" + year.substring(2, 4) + jour + mois + heure + min + sec + mil;
+//        String matricule = "ET" + RandomStringUtils.random(6, 40, 150, true, true);
+//        while (iEtudiantRepo.findByMatricule(matricule).isPresent()) {
+//            log.info("ce matricule est déjà utilisé {}", matricule);
+//            matricule = year.substring(2, 4) + "ET" + RandomStringUtils.random(4, 40, 150, true, true);
+//        }
+//        log.info("nouveau matricule {}", matricule);
 //        String matricule = date.get(Calendar.YEAR) + "ET" + (1000 + new Random().nextInt(9000));
         return matricule;
     }

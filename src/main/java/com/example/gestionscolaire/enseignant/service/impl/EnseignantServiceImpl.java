@@ -101,11 +101,15 @@ public class EnseignantServiceImpl implements IEnseignantService {
             List<String> rowData = new ArrayList<>();
 
             Iterator<Cell> cellIterator = row.cellIterator();
-            while (cellIterator.hasNext()) {
-                Cell cell = cellIterator.next();
-//                log.info("voici le contenu de la cellule " + cell.toString());
-                rowData.add(cell.toString());
-
+//            while (cellIterator.hasNext()) {
+//                Cell cell = cellIterator.next();
+////                log.info("voici le contenu de la cellule " + cell.toString());
+//                rowData.add(cell.toString());
+//
+//            }
+            for (int i = 0; i <= 2; i++)
+            {
+                rowData.add(String.valueOf(row.getCell(i)));
             }
 //            log.info("voici le contenu de la cellule2 " + rowData.get(0));
             if (iEnseignantRepo.findBySchoolMatricule(rowData.get(2)).isPresent()){
@@ -231,10 +235,25 @@ public class EnseignantServiceImpl implements IEnseignantService {
 
     public String generateMatriculeProf() {
 //        String internalReference =  "ET" +Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
+//        Calendar date = Calendar.getInstance();
+//        String year = date.get(Calendar.YEAR)+"";
+//        String matricule = year.substring(2,4) + "ESG" + (1000 + new Random().nextInt(9000));
+//        String matricule = year.substring(2, 4) + "ESG" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
+//        String matricule = year.substring(2, 4) + "ESG" + RandomStringUtils.random(3, 40, 150, true, true);
+//        String matricule = "P" + RandomStringUtils.random(3, 40, 150, true, true);
         Calendar date = Calendar.getInstance();
         String year = date.get(Calendar.YEAR)+"";
-//        String matricule = year.substring(2,4) + "ESG" + (1000 + new Random().nextInt(9000));
-        String matricule = year.substring(2, 4) + "ESG" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
+        String jour = date.get(Calendar.DAY_OF_MONTH)+"";
+        String heure = date.get(Calendar.HOUR)+"";
+        String mois = date.get(Calendar.MONTH)+"";
+        String min = date.get(Calendar.MINUTE)+"";
+        String sec = date.get(Calendar.SECOND)+"";
+        String mil = date.get(Calendar.MILLISECOND)+"";
+//        String matricule = year.substring(2,4) + "ET" + (1000 + new Random().nextInt(9000));
+//        String matricule = year.substring(2, 4) + "ET" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
+//        String matricule = year.substring(2, 4) + "ET" + RandomStringUtils.random(4, 40, 150, true, true);
+//        String matricule = year.substring(2, 4) + "ET" + RandomStringUtils.random(4, 40, 150, true, true);
+        String matricule = "ESG" + year.substring(2, 4) + jour + mois + heure + min + sec + mil;
 //        String matricule = year.substring(2,4) + "ESG" + Long.parseLong((1000 + new Random().nextInt(9000)) + RandomStringUtils.random(5, 40, 150, false, true, null, new SecureRandom()));
 //        String matricule = date.get(Calendar.YEAR) + "ESG" + (1000 + new Random().nextInt(9000));
 //        String matricule = "ESG" + (1000 + new Random().nextInt(9000));

@@ -97,7 +97,7 @@ public class EnseignantController {
             @ApiResponse(responseCode = "401", description = "Full authentication is required to access this resource", content = @Content(mediaType = "Application/Json")),
             @ApiResponse(responseCode = "403", description = "Forbidden : accès refusé", content = @Content(mediaType = "Application/Json")),
             @ApiResponse(responseCode = "500", description = "Internal Server Error ", content = @Content(mediaType = "Application/Json")),})
-    public ResponseEntity<List<List<String>>> uploadExcelFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadExcelFile(@RequestParam("file") MultipartFile file) {
         try {
             List<List<String>> excelData = iEnseignantService.importListProf(file);
             return ResponseEntity.ok(excelData);

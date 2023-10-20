@@ -38,9 +38,27 @@ public class GestionScolaireApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(GestionScolaireApplication.class, args);
         Calendar date = Calendar.getInstance();
-        String year = date.get(Calendar.YEAR) + "";
-        String matricule = year.substring(2, 4) + "ESG" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
+        String year = date.get(Calendar.YEAR)+"";
+        String jour = date.get(Calendar.DAY_OF_MONTH)+"";
+        String heure = date.get(Calendar.HOUR)+"";
+        String mois = date.get(Calendar.MONTH)+"";
+        String min = date.get(Calendar.MINUTE)+"";
+        String sec = date.get(Calendar.SECOND)+"";
+        String mil = date.get(Calendar.MILLISECOND)+"";
+//        String matricule = year.substring(2,4) + "ET" + (1000 + new Random().nextInt(9000));
+//        String matricule = year.substring(2, 4) + "ET" + (1000 + new Random().nextInt(9000)) + RandomStringUtils.random(6, 40, 150, true, true);
+//        String matricule = year.substring(2, 4) + "ET" + RandomStringUtils.random(4, 40, 150, true, true);
+//        String matricule = year.substring(2, 4) + "ET" + RandomStringUtils.random(4, 40, 150, true, true);
+        String matricule = "ET" + year.substring(2, 4) + jour + mois + heure + min + sec + mil;
         System.out.println(matricule);
+
+//        String result = "";
+//
+//        for (int i = 1; i <= 100; i++){
+//            result = result + i;
+//        }
+//        System.out.println(result);
+
     }
 
     @Bean
